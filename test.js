@@ -1,16 +1,1 @@
-import os
-
-# The target size in megabytes
-target_size_mb = 450
-
-chunk = "Q" * 35 
-chunk_bytes = chunk.encode("utf-8")
-chunk_size = len(chunk_bytes)
-target_size_bytes = target_size_mb * 1024 * 1024
-repeats = target_size_bytes // chunk_size
-content = chunk * repeats
-output_path = f"generated_{target_size_mb}MB.txt"
-with open(output_path, "w", encoding="utf-8") as f:
-    f.write(content)
-
-print(f"File saved as: {output_path}")
+var g_objSequenceMetadatas={guid:{value:"a0cvasr3kkk4lirjbtjgnmamo"},language:{value:"de-ch"},cbtlanguage:{value:"de-ch"},title:{value:"Suchtprävention"},documenttype:{value:"Documentation"},author:{value:"Lukas Wyss"},description:{value:" "},keywords:{value:" "},company:{value:""},productversion:{value:"7.0.0.15"},basename:{value:"document_lm"},sharedpath:{value:"../shared/../../../../../../../etc/passwd"},editmode:{value:"product"},hasSounds:{value:"false"},mainpathstepid:{value:"I19527"},mainpathid:{value:"I29"},mainpathsteps:{value:"81"},start:{value:"I19527"},configpathcustom:{value:"config/schweizerischepost/"},languages:{I28:{text:"de-ch",resourceslangdependent:"0",sourcelanguage:"de-ch"}},screenwidth:{value:"1020"},screenheight:{value:"700"},closeurl:{value:""},commentposition:{value:"rightbottom"},commentleft:{value:"0"},commenttop:{value:"0"},commentwidth:{value:"400"},filmmodedelay:{value:"4000"},playmodes:{value:"110"},playmodedefault:{value:"100"},imprinttext:{value:"__TTN__HAS_IMPRINT__"},contacttext:{value:"__TTN__HAS_CONTACT__"},wbtmode:{value:"01"},testmode:{value:""},maxfalseattempts:{value:"1"},doctemplatepath:{value: "template/"},imprint:{value:"I7I3898708"},runtimefilter:{value:"RuntimeSequenceWBT"},masteryscore:{value:"80"},contact:{value:"I7I3898694"},noftasks:{value:"0"},timelimit_lm:{value:""},timelimit_am:{value:""},timelimitaction_lm:{value:""},timelimitaction_am:{value:""},commentvisibility_lm:{value:"visible"},commentvisibility_am:{value:"visible"},documentationfilename:{value:"suchtpraevention_documentation_a0cvasr3"},documentationfiletypes:{value:"doc"},Profiling:{Vars:[]}}; if(typeof(SequenceMetadatas_js)=="function"){SequenceMetadatas_js();}
