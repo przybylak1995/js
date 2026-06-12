@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<manialink version="3">
+    <frame pos="0 0">
+        <label pos="0 0" halign="center" valign="center" text="Test Succesvol!" textsize="5" />
+    </frame>
+</manialink>
